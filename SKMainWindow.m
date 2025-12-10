@@ -40,8 +40,28 @@
 #import "SKImageToolTipWindow.h"
 #import "NSResponder_SKExtensions.h"
 
+#define SKHideWindowDecorationsKey @"SKHideWindowDecorations"
 
 @implementation SKMainWindow
+
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    
+    // Hidden preference: defaults write net.sourceforge.skim-app.skim SKHideWindowDecorations -bool true
+    if ([[NSUserDefaults standardUserDefaults] boolForKey:SKHideWindowDecorationsKey]) {
+        [self setStyleMask:[self styleMask] & ~NSWindowStyleMaskTitled];
+        [self setMovableByWindowBackground:YES];
+    }
+}
+
+// Windows without NSWindowStyleMaskTitled cannot become key by default
+- (BOOL)canBecomeKeyWindow {
+    return YES;
+}
+
+- (BOOL)canBecomeMainWindow {
+    return YES;
+}
 
 @synthesize disableConstrainedFrame;
 
